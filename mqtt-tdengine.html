@@ -1,0 +1,128 @@
+<script type="text/javascript">
+    RED.nodes.registerType('mqtt-tdengine', {
+        category: 'storage',
+        color: '#a6bbcf',
+        defaults: {
+            name: {value: ""},
+            broker: {value: "mqtt://localhost:1883", required: true},
+            topic: {value: "sensor/data", required: true},
+            qos: {value: 0},
+            tdUrl: {value: "ws://localhost:6041", required: true},
+            tdDatabase: {value: "test", required: true},
+            tdTable: {value: "sensor_data", required: true},
+            sqlTemplate: {value: "INSERT INTO ${table} VALUES (NOW(), '${payload}')", required: true}
+        },
+        inputs: 0,
+        outputs: 1,
+        icon: "db.png",
+        label: function() {
+            return this.name || "MQTT to TDengine";
+        },
+        oneditprepare: function() {
+            // 设置默认SQL模板
+            if (!this.sqlTemplate) {
+                $("#node-input-sqlTemplate").val("INSERT INTO ${table} VALUES (NOW, '${payload}')");
+            }
+        }
+    });
+</script>
+
+<script type="text/html" data-template-name="mqtt-tdengine">
+    <div class="form-row">
+        <label for="node-input-name"><i class="icon-tag"></i> 名称</label>
+        <input type="text" id="node-input-name" placeholder="节点名称">
+    </div>
+    
+    <div class="form-row">
+        <h4>MQTT配置</h4>
+    </div>
+    <div class="form-row">
+        <label for="node-input-broker"><i class="fa fa-globe"></i> MQTT服务器</label>
+        <input type="text" id="node-input-broker" placeholder="mqtt://localhost:1883">
+    </div>
+    <div class="form-row">
+        <label for="node-input-topic"><i class="fa fa-tasks"></i> 主题</label>
+        <input type="text" id="node-input-topic" placeholder="sensor/+/data">
+    </div>
+    <div class="form-row">
+        <label for="node-input-qos"><i class="fa fa-empire"></i> QoS</label>
+        <select id="node-input-qos">
+            <option value="0">0 - 最多一次</option>
+            <option value="1">1 - 至少一次</option>
+            <option value="2">2 - 恰好一次</option>
+        </select>
+    </div>
+    
+    <div class="form-row">
+        <h4>TDengine配置</h4>
+    </div>
+    <div class="form-row">
+        <label for="node-input-tdUrl"><i class="fa fa-server"></i> TDengine WebSocket URL</label>
+        <input type="text" id="node-input-tdUrl" placeholder="ws://localhost:6041">
+    </div>
+    <div class="form-row">
+        <label for="node-input-tdDatabase"><i class="fa fa-database"></i> 数据库</label>
+        <input type="text" id="node-input-tdDatabase" placeholder="test">
+    </div>
+    <div class="form-row">
+        <label for="node-input-tdTable"><i class="fa fa-table"></i> 表名</label>
+        <input type="text" id="node-input-tdTable" placeholder="sensor_data">
+    </div>
+    
+    <div class="form-row">
+        <h4>SQL配置</h4>
+    </div>
+    <div class="form-row">
+        <label for="node-input-sqlTemplate"><i class="fa fa-code"></i> SQL模板</label>
+        <textarea id="node-input-sqlTemplate" rows="4" placeholder="INSERT INTO ${table} VALUES (NOW, '${payload}')" style="width: 100%; resize: vertical;"></textarea>
+        <div class="form-tips">
+            <b>可用变量:</b><br>
+            ${payload} - MQTT消息内容<br>
+            ${topic} - MQTT主题<br>
+            ${table} - 表名<br>
+            ${database} - 数据库名<br>
+            示例: INSERT INTO ${table} VALUES (NOW, '${payload}', '${topic}')
+        </div>
+    </div>
+</script>
+
+<script type="text/html" data-help-name="mqtt-tdengine">
+    <p>此节点订阅MQTT主题，接收消息后使用TDengine WebSocket连接器将数据写入TDengine数据库。</p>
+    
+    <h3>配置</h3>
+    <dl class="message-properties">
+        <dt>名称 <span class="property-type">字符串</span></dt>
+        <dd>节点的显示名称</dd>
+        
+        <dt>MQTT服务器 <span class="property-type">字符串</span></dt>
+        <dd>MQTT代理服务器地址，例如：mqtt://localhost:1883</dd>
+        
+        <dt>主题 <span class="property-type">字符串</span></dt>
+        <dd>要订阅的MQTT主题</dd>
+        
+        <dt>QoS <span class="property-type">数字</span></dt>
+        <dd>MQTT消息质量等级 (0, 1, 2)</dd>
+        
+        <dt>TDengine WebSocket URL <span class="property-type">字符串</span></dt>
+        <dd>TDengine WebSocket连接地址，例如：ws://localhost:6041 或 wss://cloud.tdengine.com</dd>
+        
+        <dt>数据库 <span class="property-type">字符串</span></dt>
+        <dd>TDengine数据库名称</dd>
+        
+        <dt>表名 <span class="property-type">字符串</span></dt>
+        <dd>TDengine表名称</dd>
+        
+        <dt>SQL模板 <span class="property-type">字符串</span></dt>
+        <dd>SQL插入语句模板，支持变量替换：${payload}, ${topic}, ${table}, ${database}</dd>
+    </dl>
+
+    <h3>输出</h3>
+    <dl class="message-properties">
+        <dt>payload <span class="property-type">object</span></dt>
+        <dd>包含执行结果的对象，包括成功/失败状态和相关信息</dd>
+    </dl>
+
+    <h3>详细信息</h3>
+    <p>此节点订阅指定的MQTT主题，接收到消息后根据配置的SQL模板将数据写入TDengine数据库。</p>
+    <p>使用TDengine的REST API进行数据插入操作。</p>
+</script>

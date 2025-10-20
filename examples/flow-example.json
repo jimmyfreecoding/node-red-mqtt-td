@@ -1,0 +1,174 @@
+[
+    {
+        "id": "mqtt-td-example",
+        "type": "tab",
+        "label": "MQTT to TDengine 示例",
+        "disabled": false,
+        "info": "这是一个展示如何使用MQTT to TDengine节点的示例流程"
+    },
+    {
+        "id": "mqtt-td-node-1",
+        "type": "mqtt-tdengine",
+        "z": "mqtt-td-example",
+        "name": "温度传感器数据",
+        "broker": "mqtt://localhost:1883",
+        "topic": "sensor/temperature",
+        "qos": 0,
+        "tdHost": "localhost",
+        "tdPort": 6041,
+        "tdUser": "root",
+        "tdPassword": "taosdata",
+        "tdDatabase": "iot_data",
+        "tdTable": "temperature_data",
+        "sqlTemplate": "INSERT INTO ${table} VALUES (NOW, ${payload})",
+        "x": 300,
+        "y": 100,
+        "wires": [["debug-1"]]
+    },
+    {
+        "id": "debug-1",
+        "type": "debug",
+        "z": "mqtt-td-example",
+        "name": "温度数据结果",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "x": 550,
+        "y": 100,
+        "wires": []
+    },
+    {
+        "id": "mqtt-td-node-2",
+        "type": "mqtt-tdengine",
+        "z": "mqtt-td-example",
+        "name": "多传感器数据",
+        "broker": "mqtt://localhost:1883",
+        "topic": "sensor/+/data",
+        "qos": 1,
+        "tdHost": "localhost",
+        "tdPort": 6041,
+        "tdUser": "root",
+        "tdPassword": "taosdata",
+        "tdDatabase": "iot_data",
+        "tdTable": "sensor_data",
+        "sqlTemplate": "INSERT INTO ${table} VALUES (NOW, '${topic}', '${payload}')",
+        "x": 300,
+        "y": 200,
+        "wires": [["debug-2"]]
+    },
+    {
+        "id": "debug-2",
+        "type": "debug",
+        "z": "mqtt-td-example",
+        "name": "传感器数据结果",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "x": 550,
+        "y": 200,
+        "wires": []
+    },
+    {
+        "id": "inject-1",
+        "type": "inject",
+        "z": "mqtt-td-example",
+        "name": "模拟温度数据",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "sensor/temperature",
+        "payload": "25.6",
+        "payloadType": "num",
+        "x": 120,
+        "y": 300,
+        "wires": [["mqtt-out-1"]]
+    },
+    {
+        "id": "mqtt-out-1",
+        "type": "mqtt out",
+        "z": "mqtt-td-example",
+        "name": "发布到MQTT",
+        "topic": "",
+        "qos": "",
+        "retain": "",
+        "broker": "mqtt-broker-1",
+        "x": 320,
+        "y": 300,
+        "wires": []
+    },
+    {
+        "id": "inject-2",
+        "type": "inject",
+        "z": "mqtt-td-example",
+        "name": "模拟湿度数据",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "sensor/humidity/data",
+        "payload": "{\"humidity\": 65.2, \"device\": \"sensor_001\"}",
+        "payloadType": "str",
+        "x": 120,
+        "y": 360,
+        "wires": [["mqtt-out-2"]]
+    },
+    {
+        "id": "mqtt-out-2",
+        "type": "mqtt out",
+        "z": "mqtt-td-example",
+        "name": "发布到MQTT",
+        "topic": "",
+        "qos": "",
+        "retain": "",
+        "broker": "mqtt-broker-1",
+        "x": 320,
+        "y": 360,
+        "wires": []
+    },
+    {
+        "id": "mqtt-broker-1",
+        "type": "mqtt-broker",
+        "name": "本地MQTT服务器",
+        "broker": "localhost",
+        "port": "1883",
+        "clientid": "",
+        "usetls": false,
+        "compatmode": false,
+        "keepalive": "60",
+        "cleansession": true,
+        "birthTopic": "",
+        "birthQos": "0",
+        "birthPayload": "",
+        "closeTopic": "",
+        "closeQos": "0",
+        "closePayload": "",
+        "willTopic": "",
+        "willQos": "0",
+        "willPayload": ""
+    }
+]
