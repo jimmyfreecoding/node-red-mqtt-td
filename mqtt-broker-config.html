@@ -1,0 +1,193 @@
+<script type="text/javascript">
+    RED.nodes.registerType('mqtt-broker-config', {
+        category: 'config',
+        defaults: {
+            name: { value: "" },
+            broker: { value: "localhost", required: true },
+            port: { value: 1883, required: true, validate: RED.validators.number() },
+            clientid: { value: "" },
+            usetls: { value: false },
+            verifyservercert: { value: true },
+            compatmode: { value: false },
+            keepalive: { value: 60, validate: RED.validators.number() },
+            cleansession: { value: true },
+            willTopic: { value: "" },
+            willQos: { value: 0 },
+            willRetain: { value: false },
+            willPayload: { value: "" },
+            birthTopic: { value: "" },
+            birthQos: { value: 0 },
+            birthRetain: { value: false },
+            birthPayload: { value: "" },
+            closeTopic: { value: "" },
+            closeQos: { value: 0 },
+            closeRetain: { value: false },
+            closePayload: { value: "" }
+        },
+        credentials: {
+            username: { type: "text" },
+            password: { type: "password" }
+        },
+        label: function() {
+            if (this.name) {
+                return this.name;
+            } else if (this.broker) {
+                return (this.usetls ? "mqtts://" : "mqtt://") + this.broker + ":" + this.port;
+            } else {
+                return "MQTT配置";
+            }
+        },
+        labelStyle: function() {
+            return this.name ? "node_label_italic" : "";
+        },
+        oneditprepare: function() {
+            var tabs = RED.tabs.create({
+                id: "node-config-mqtt-broker-tabs",
+                onchange: function(tab) {
+                    $("#node-config-mqtt-broker-tabs-content").children().hide();
+                    $("#" + tab.id).show();
+                }
+            });
+            tabs.addTab({
+                id: "mqtt-broker-tab-connection",
+                label: "连接"
+            });
+            tabs.addTab({
+                id: "mqtt-broker-tab-security",
+                label: "安全"
+            });
+            tabs.addTab({
+                id: "mqtt-broker-tab-messages",
+                label: "消息"
+            });
+            
+            $("#node-config-input-usetls").change(function() {
+                if ($(this).is(":checked")) {
+                    $("#node-config-input-port").val(8883);
+                } else {
+                    $("#node-config-input-port").val(1883);
+                }
+            });
+        }
+    });
+</script>
+
+<script type="text/html" data-template-name="mqtt-broker-config">
+    <div class="form-row">
+        <label for="node-config-input-name"><i class="fa fa-tag"></i> 名称</label>
+        <input type="text" id="node-config-input-name" placeholder="配置名称">
+    </div>
+    
+    <div class="form-row tabs-row">
+        <ul style="background: #fff; min-width: 600px; margin-bottom: 20px;" id="node-config-mqtt-broker-tabs"></ul>
+    </div>
+    
+    <div id="node-config-mqtt-broker-tabs-content" style="min-height: 170px;">
+        <div id="mqtt-broker-tab-connection" style="display:none">
+            <div class="form-row">
+                <label for="node-config-input-broker"><i class="fa fa-globe"></i> 服务器</label>
+                <input type="text" id="node-config-input-broker" placeholder="localhost">
+            </div>
+            <div class="form-row">
+                <label for="node-config-input-port"><i class="fa fa-random"></i> 端口</label>
+                <input type="text" id="node-config-input-port" placeholder="1883">
+            </div>
+            <div class="form-row">
+                <input type="checkbox" id="node-config-input-usetls" style="display: inline-block; width: auto; vertical-align: top;">
+                <label for="node-config-input-usetls" style="width: 70%;">启用安全(SSL/TLS)连接</label>
+            </div>
+            <div class="form-row">
+                <label for="node-config-input-clientid"><i class="fa fa-tag"></i> 客户端ID</label>
+                <input type="text" id="node-config-input-clientid" placeholder="留空自动生成">
+            </div>
+            <div class="form-row">
+                <label for="node-config-input-keepalive"><i class="fa fa-clock-o"></i> Keep Alive (秒)</label>
+                <input type="text" id="node-config-input-keepalive" placeholder="60">
+            </div>
+            <div class="form-row">
+                <input type="checkbox" id="node-config-input-cleansession" style="display: inline-block; width: auto; vertical-align: top;">
+                <label for="node-config-input-cleansession" style="width: 70%;">使用清洁会话</label>
+            </div>
+        </div>
+        
+        <div id="mqtt-broker-tab-security" style="display:none">
+            <div class="form-row">
+                <label for="node-config-input-username"><i class="fa fa-user"></i> 用户名</label>
+                <input type="text" id="node-config-input-username">
+            </div>
+            <div class="form-row">
+                <label for="node-config-input-password"><i class="fa fa-lock"></i> 密码</label>
+                <input type="password" id="node-config-input-password">
+            </div>
+        </div>
+        
+        <div id="mqtt-broker-tab-messages" style="display:none">
+            <div class="form-row">
+                <label><i class="fa fa-sign-in"></i> 连接消息</label>
+            </div>
+            <div class="form-row" style="margin-left: 20px;">
+                <label for="node-config-input-birthTopic">主题</label>
+                <input type="text" id="node-config-input-birthTopic" placeholder="可选">
+            </div>
+            <div class="form-row" style="margin-left: 20px;">
+                <label for="node-config-input-birthPayload">消息</label>
+                <input type="text" id="node-config-input-birthPayload" placeholder="可选">
+            </div>
+            
+            <div class="form-row">
+                <label><i class="fa fa-sign-out"></i> 断开消息</label>
+            </div>
+            <div class="form-row" style="margin-left: 20px;">
+                <label for="node-config-input-closeTopic">主题</label>
+                <input type="text" id="node-config-input-closeTopic" placeholder="可选">
+            </div>
+            <div class="form-row" style="margin-left: 20px;">
+                <label for="node-config-input-closePayload">消息</label>
+                <input type="text" id="node-config-input-closePayload" placeholder="可选">
+            </div>
+            
+            <div class="form-row">
+                <label><i class="fa fa-exclamation"></i> 遗嘱消息</label>
+            </div>
+            <div class="form-row" style="margin-left: 20px;">
+                <label for="node-config-input-willTopic">主题</label>
+                <input type="text" id="node-config-input-willTopic" placeholder="可选">
+            </div>
+            <div class="form-row" style="margin-left: 20px;">
+                <label for="node-config-input-willPayload">消息</label>
+                <input type="text" id="node-config-input-willPayload" placeholder="可选">
+            </div>
+        </div>
+    </div>
+</script>
+
+<script type="text/html" data-help-name="mqtt-broker-config">
+    <p>MQTT代理服务器连接配置节点。</p>
+    
+    <h3>连接配置</h3>
+    <dl class="message-properties">
+        <dt>服务器 <span class="property-type">字符串</span></dt>
+        <dd>MQTT代理服务器的主机名或IP地址</dd>
+        
+        <dt>端口 <span class="property-type">数字</span></dt>
+        <dd>MQTT代理服务器端口，通常为1883(非加密)或8883(SSL/TLS)</dd>
+        
+        <dt>客户端ID <span class="property-type">字符串</span></dt>
+        <dd>MQTT客户端标识符，留空将自动生成</dd>
+        
+        <dt>Keep Alive <span class="property-type">数字</span></dt>
+        <dd>心跳间隔时间，单位秒</dd>
+    </dl>
+    
+    <h3>安全配置</h3>
+    <dl class="message-properties">
+        <dt>用户名/密码 <span class="property-type">字符串</span></dt>
+        <dd>MQTT代理服务器认证凭据</dd>
+        
+        <dt>SSL/TLS <span class="property-type">布尔</span></dt>
+        <dd>启用加密连接</dd>
+    </dl>
+    
+    <h3>使用说明</h3>
+    <p>此配置节点用于存储MQTT代理服务器的连接信息，可以被多个MQTT相关节点共享使用。</p>
+</script>

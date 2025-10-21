@@ -1,0 +1,82 @@
+<script type="text/javascript">
+    RED.nodes.registerType('tdengine-config', {
+        category: 'config',
+        defaults: {
+            name: { value: "" },
+            url: { value: "ws://localhost:6041", required: true },
+            database: { value: "", required: false },
+            timeout: { value: 5000, validate: RED.validators.number() }
+        },
+        credentials: {
+            username: { type: "text" },
+            password: { type: "password" }
+        },
+        label: function() {
+            return this.name || "TDengine配置";
+        },
+        labelStyle: function() {
+            return this.name ? "node_label_italic" : "";
+        }
+    });
+</script>
+
+<script type="text/html" data-template-name="tdengine-config">
+    <div class="form-row">
+        <label for="node-config-input-name"><i class="fa fa-tag"></i> 名称</label>
+        <input type="text" id="node-config-input-name" placeholder="配置名称">
+    </div>
+    <div class="form-row">
+        <label for="node-config-input-url"><i class="fa fa-globe"></i> WebSocket URL</label>
+        <input type="text" id="node-config-input-url" placeholder="ws://localhost:6041">
+    </div>
+    <div class="form-row">
+        <label for="node-config-input-username"><i class="fa fa-user"></i> 用户名</label>
+        <input type="text" id="node-config-input-username" placeholder="root">
+    </div>
+    <div class="form-row">
+        <label for="node-config-input-password"><i class="fa fa-lock"></i> 密码</label>
+        <input type="password" id="node-config-input-password" placeholder="taosdata">
+    </div>
+    <div class="form-row">
+        <label for="node-config-input-database"><i class="fa fa-database"></i> 默认数据库</label>
+        <input type="text" id="node-config-input-database" placeholder="可选，如buildingos">
+    </div>
+    <div class="form-row">
+        <label for="node-config-input-timeout"><i class="fa fa-clock-o"></i> 连接超时(ms)</label>
+        <input type="number" id="node-config-input-timeout" placeholder="5000">
+    </div>
+</script>
+
+<script type="text/html" data-help-name="tdengine-config">
+    <p>TDengine数据库连接配置节点。</p>
+    
+    <h3>配置参数</h3>
+    <dl class="message-properties">
+        <dt>名称 <span class="property-type">字符串</span></dt>
+        <dd>配置节点的显示名称</dd>
+        
+        <dt>WebSocket URL <span class="property-type">字符串</span></dt>
+        <dd>TDengine WebSocket连接地址，例如：
+            <ul>
+                <li>本地部署: <code>ws://localhost:6041</code></li>
+                <li>TDengine Cloud: <code>wss://your-instance.cloud.tdengine.com</code></li>
+            </ul>
+        </dd>
+        
+        <dt>用户名 <span class="property-type">字符串</span></dt>
+        <dd>TDengine数据库用户名，默认为 <code>root</code></dd>
+        
+        <dt>密码 <span class="property-type">字符串</span></dt>
+        <dd>TDengine数据库密码，默认为 <code>taosdata</code></dd>
+        
+        <dt>默认数据库 <span class="property-type">字符串</span></dt>
+        <dd>可选，指定默认使用的数据库名称</dd>
+        
+        <dt>连接超时 <span class="property-type">数字</span></dt>
+        <dd>WebSocket连接超时时间，单位毫秒，默认5000ms</dd>
+    </dl>
+    
+    <h3>使用说明</h3>
+    <p>此配置节点用于存储TDengine数据库的连接信息，可以被多个MQTT to TDengine节点共享使用。</p>
+    <p>用户名和密码会被安全存储，不会在流程导出时包含敏感信息。</p>
+</script>

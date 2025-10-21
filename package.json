@@ -16,12 +16,15 @@
   "author": "Your Name",
   "license": "MIT",
   "dependencies": {
-    "mqtt": "^4.3.7",
-    "@tdengine/websocket": "^3.0.0"
+    "@tdengine/websocket": "^3.1.0",
+    "axios": "^1.12.2",
+    "mqtt": "^4.3.7"
   },
   "node-red": {
     "nodes": {
-      "mqtt-tdengine": "mqtt-tdengine.js"
+      "mqtt-tdengine": "mqtt-tdengine.js",
+      "tdengine-config": "tdengine-config.js",
+      "mqtt-broker-config": "mqtt-broker-config.js"
     }
   },
   "repository": {

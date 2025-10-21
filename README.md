@@ -29,6 +29,10 @@ npm install node-red-contrib-mqtt-tdengine
 
 ### 方法3: 本地开发安装
 
+适用于开发和测试环境，可以实时修改代码并在Node-RED中测试。
+
+#### Linux/macOS 环境
+
 ```bash
 # 克隆或下载项目到本地
 cd /path/to/node-red-mqtt-td
@@ -36,10 +40,48 @@ cd /path/to/node-red-mqtt-td
 # 安装依赖
 npm install
 
-# 链接到Node-RED
+# 创建全局链接
+npm link
+
+# 切换到Node-RED目录并链接节点
 cd ~/.node-red
-npm link /path/to/node-red-mqtt-td
+npm link node-red-contrib-mqtt-tdengine
+
+# 启动Node-RED
+node-red
 ```
+
+#### Windows 环境
+
+```powershell
+# 克隆或下载项目到本地
+cd C:\project\node-red-mqtt-td
+
+# 安装依赖
+npm install
+
+# 创建全局链接
+npm link
+
+# 切换到Node-RED目录并链接节点
+cd $env:USERPROFILE\.node-red
+npm link node-red-contrib-mqtt-tdengine
+
+# 启动Node-RED
+node-red
+```
+
+#### 验证安装
+
+1. 启动Node-RED后，访问 http://127.0.0.1:1880/
+2. 在左侧节点面板中查找 "MQTT to TDengine" 节点
+3. 如果看到节点，说明链接安装成功
+
+#### 开发注意事项
+
+- 使用 `npm link` 创建的是符号链接，修改源代码后需要重启Node-RED才能生效
+- 如果需要取消链接，在Node-RED目录中执行：`npm unlink node-red-contrib-mqtt-tdengine`
+- 开发完成后，可以通过 `npm publish` 发布到npm仓库
 
 ## 配置说明
 
