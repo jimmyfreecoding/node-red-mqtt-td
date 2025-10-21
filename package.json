@@ -1,26 +1,41 @@
 {
   "name": "node-red-contrib-mqtt-tdengine",
   "version": "1.0.0",
-  "description": "Node-RED节点，用于将MQTT数据写入TDengine数据库",
+  "description": "A Node-RED node for writing MQTT data to TDengine database with batch insert support and enhanced error handling",
   "main": "mqtt-tdengine.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "node test-variable-simple.js"
   },
   "keywords": [
     "node-red",
     "mqtt",
     "tdengine",
     "iot",
-    "timeseries"
+    "timeseries",
+    "database",
+    "batch-insert",
+    "websocket",
+    "time-series"
   ],
-  "author": "Your Name",
+  "author": {
+    "name": "Node-RED Community",
+    "email": "support@example.com"
+  },
   "license": "MIT",
+  "homepage": "https://github.com/yourusername/node-red-contrib-mqtt-tdengine#readme",
+  "bugs": {
+    "url": "https://github.com/yourusername/node-red-contrib-mqtt-tdengine/issues"
+  },
   "dependencies": {
     "@tdengine/websocket": "^3.1.0",
     "axios": "^1.12.2",
     "mqtt": "^4.3.7"
   },
+  "peerDependencies": {
+    "node-red": ">=2.0.0"
+  },
   "node-red": {
+    "version": ">=2.0.0",
     "nodes": {
       "mqtt-tdengine": "mqtt-tdengine.js",
       "tdengine-config": "tdengine-config.js",
@@ -29,9 +44,17 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/yourusername/node-red-contrib-mqtt-tdengine.git"
+    "url": "git+https://github.com/yourusername/node-red-contrib-mqtt-tdengine.git"
   },
   "engines": {
-    "node": ">=14.0.0"
-  }
+    "node": ">=14.0.0",
+    "npm": ">=6.0.0"
+  },
+  "files": [
+    "*.js",
+    "*.html",
+    "examples/",
+    "README.md",
+    "LICENSE"
+  ]
 }

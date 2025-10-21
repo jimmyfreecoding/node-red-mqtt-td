@@ -1,0 +1,37 @@
+# Test files
+test-*.js
+test/
+
+# Development files
+.vscode/
+.idea/
+*.log
+*.tmp
+
+# Git files
+.git/
+.gitignore
+
+# Node modules (should not be included anyway)
+node_modules/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Editor files
+*.swp
+*.swo
+*~
+
+# Coverage reports
+coverage/
+.nyc_output/
+
+# Build artifacts
+dist/
+build/
+
+# Documentation source (keep README.md)
+docs/
+*.md.backup
